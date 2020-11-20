@@ -1,0 +1,108 @@
+---
+
+- name: Create Volume
+  become: true
+  become_user: root
+  shell: "pvcreate  {{item}}"
+  loop:
+    - /dev/disk/azure/scsi1/lun0
+    - /dev/disk/azure/scsi1/lun1
+    - /dev/disk/azure/scsi1/lun2
+    - /dev/disk/azure/scsi1/lun3
+
+- name: Create Volume Group for data disks
+  lvg:
+    vg: data-vg01
+    pvs: /dev/disk/azure/scsi1/lun0,/dev/disk/azure/scsi1/lun1
+
+- name: Create Volume Group for log disks
+  lvg:
+    vg: log-vg01
+    pvs: /dev/disk/azure/scsi1/lun2
+
+- name: Create Volume Group for shared disks
+  lvg:
+    vg: shared-vg01
+    pvs: /dev/disk/azure/scsi1/lun3
+
+- name: Create a logical volume for data disks
+  lvol:
+    vg: data-vg01
+    lv: data-lv01
+    size: 100%FREE
+    opts: --stripes 2
+
+- name: Create a logical volume for log disks
+  lvol:
+    vg: log-vg01
+    lv: log-lv01
+    size: 100%FREE
+   
+- name: Create a logical volume for shared disks
+  lvol:
+    vg: shared-vg01
+    lv: shared-lv01
+    size: 100%FREE
+
+- name: Create a xfs filesystem on data disks
+  filesystem:
+    fstype: xfs
+    dev: /dev/data-vg01/data-lv01
+
+- name: Create a xfs filesystem on log disks
+  filesystem:
+    fstype: xfs
+    dev: /dev/log-vg01/log-lv01
+
+- name: Create a xfs filesystem on shared disks
+  filesystem:
+    fstype: xfs
+    dev: /dev/shared-vg01/shared-lv01
+
+- name: Create a directory if it does not exist
+  file:
+    path: /hana
+    state: directory
+    mode: '0755'
+
+- name: Create hana sub directories
+  file:
+    path: /hana/data
+    state: directory
+    mode: '0755'
+
+- name: Create hana sub directories
+  file:
+    path: /hana/log
+    state: directory
+    mode: '0755'
+
+- name: Create hana sub directories
+  file:
+    path: /hana/shared
+    state: directory
+    mode: '0755'
+
+- name: HANA DATA
+  mount:
+    path: /hana/data
+    src: /dev/data-vg01/data-lv01
+    fstype: xfs
+    opts: defaults
+    state: mounted
+
+- name: HANA LOG
+  mount:
+    path: /hana/log
+    src: /dev/log-vg01/log-lv01
+    fstype: xfs
+    opts: defaults
+    state: mounted
+
+- name: HANA SHARED
+  mount:
+    path: /hana/shared
+    src: /dev/shared-vg01/shared-lv01
+    fstype: xfs
+    opts: defaults
+    state: mounted

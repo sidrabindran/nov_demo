@@ -1,0 +1,25 @@
+---
+
+- name: HANA DATA
+  mount:
+    path: /hana/data
+    src: /dev/data-vg01/data-lv01
+    fstype: xfs
+    opts: defaults
+    state: mounted
+
+- name: HANA LOG
+  mount:
+    path: /hana/log
+    src: /dev/log-vg01/log-lv01
+    fstype: xfs
+    opts: defaults
+    state: mounted
+
+- name: HANA SHARED
+  mount:
+    path: /hana/shared
+    src: /dev/shared-vg01/shared-lv01
+    fstype: xfs
+    opts: defaults
+    state: mounted

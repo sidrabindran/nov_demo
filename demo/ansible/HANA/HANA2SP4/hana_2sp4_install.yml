@@ -1,0 +1,7 @@
+---
+- hosts: 10.1.0.7
+  become: true
+  vars_files:
+    - ./hana_2sp4_vars.yml
+  roles:
+    - saphana-install

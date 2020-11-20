@@ -1,0 +1,8 @@
+---
+- hosts: 
+  become: true
+  vars_files:
+    
+  roles:
+    - package_install
+    - disks

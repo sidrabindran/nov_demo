@@ -1,0 +1,29 @@
+---
+- name: create install dir
+  file:
+    path: /hana/shared/install
+    state: directory
+
+- name: deploy hdblcm install template
+  template:
+    src: "{{ 'hdbserver_hana2sp4_xs.j2' if xsinstall else 'hdbserver_hana2sp4_vanilla.j2'}}"
+    dest: /hana/shared/install/hdbserver_{{ sap_sid }}_install.cfg
+    mode: 0755
+
+- name: download software
+  get_url:
+    url: "{{ url_hdbserver }}"
+    dest: /hana/shared/install/HANA_LINUX.zip
+    mode: 0755
+
+- name: Unarchive files
+  unarchive:
+    src: /hana/shared/install/HANA_LINUX.zip
+    dest: /hana/shared/install
+    remote_src: yes
+    mode: 0755
+
+- name: run hdblcm
+  shell: "./hdblcm --batch --action=install --configfile='../../hdbserver_{{ sap_sid }}_install.cfg'"
+  args:
+    chdir: /hana/shared/install/DATA_UNITS/HDB_SERVER_LINUX_X86_64

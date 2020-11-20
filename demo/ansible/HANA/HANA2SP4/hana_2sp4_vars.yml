@@ -1,0 +1,13 @@
+sap_sid: 
+sap_instancenum:
+sap_hostname: 
+fqdn: 
+
+pwd_os_sapadm: 
+pwd_master: 
+pwd_os_sidadm: 
+pwd_db_system: 
+pwd_xs_admin: 
+
+url_hdbserver: 
+xsinstall: false

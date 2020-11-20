@@ -1,0 +1,38 @@
+---
+
+- name: installing required packages
+  package:
+    name="{{ item }}"
+    state=present
+  with_items:
+    - gdisk
+    - sg3_utils
+    - lvm2
+    - nfs-utils
+    - cifs-utils
+    - telnet
+    - uuidd
+    - "@performance"
+    - compat-sap-c++-6
+    - cairo
+    - expect
+    - graphviz
+    - iptraf-ng
+    - krb5-workstation
+    - krb5-libs
+    - libcanberra-gtk2
+    - libicu
+    - libpng12
+    - libssh2
+    - libtool-ltdl
+    - gcc
+    - kernel-devel
+    - libstdc++-devel
+    - redhat-rpm-config
+    - rpm-build
+    - zlib-devel
+    - libatomic
+    - compat-sap-c++-7
+    - compat-sap-c++-5
+  tags:
+    - disk_setup
